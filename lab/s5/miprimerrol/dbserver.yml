@@ -1,0 +1,13 @@
+---
+- name: Instalar mis servidores mysql
+  hosts: dbserver
+  tasks:
+   - include_role: 
+       name: comun
+
+   - include_role: 
+       name: mysql
+
+   - debug: msg="He acabado el playbook dbserver"
+
+

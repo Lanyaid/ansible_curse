@@ -1,0 +1,45 @@
+--- 
+- name: Purgar targets
+  hosts: targets
+  tasks: 
+   - name: parar servicios
+     service: 
+       name: "{{ item }}"
+       state: stopped
+     loop:
+       - apache2
+       - mysql
+     ignore_errors: true
+
+   - name: Borrar software
+     apt: 
+      name: "{{ item }}"
+      state: absent
+      purge: yes
+     loop:
+        - apache2
+        - php
+        - mysql-server
+        - mysql-client
+        - mysql-server-core
+        - mysql-client-core
+        - mysql-common
+        - python-mysqldb
+        - libapache2-mod-php
+        - php-mysql 
+
+   - name: Borrar /var/www/html
+     file:
+       path: /var/www/html
+       state: absent
+
+   - name: Borrar directorio de bbdd
+     file: 
+       path: "{{ item }}"
+       state: absent
+     loop:
+       - /var/lib/mysql
+       - /etc/mysql
+
+  
+

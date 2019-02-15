@@ -1,0 +1,9 @@
+---
+- name: Mi primer playbook
+  hosts: all
+  tasks: 
+   - name: primera tarea
+     debug:
+       msg: "resultado de la primera tarea"
+   - name: segunda tarea
+     ping:

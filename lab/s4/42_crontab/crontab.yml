@@ -1,0 +1,12 @@
+---
+- name: Añadir una linea al crontab
+  hosts: all
+  tasks:
+    - name: Programar la limpieza del tmp
+      cron: 
+        name: "limpiar tmp"
+        minute: 0
+        hour: 0
+        job: 'find /tmp -name \*tmp -type f -mtime +10 -delete'
+
+ 

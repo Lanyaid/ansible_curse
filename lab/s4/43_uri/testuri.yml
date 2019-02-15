@@ -1,0 +1,13 @@
+---
+- name: probar modulo uri
+  hosts: master
+  tasks:
+    - name: Llamar a un formulario
+      uri:
+        url: http://www.inetutil.info/psa/pruebaform.php
+        method: POST
+        body: "nombre=Perico"
+        return_content: yes
+      register: salida
+
+    - debug: var=salida

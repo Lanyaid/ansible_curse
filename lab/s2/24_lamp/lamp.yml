@@ -1,0 +1,133 @@
+---
+- name: Instalar apache, php, mysql y desplegar una aplicacion lamp
+  hosts: targets
+  tasks:
+   - name: Instalar software
+     apt: 
+      name: "{{ item }}"
+      state: latest
+     loop:
+        - apache2
+        - php
+        - mysql-server
+        - python-mysqldb
+        - libapache2-mod-php
+        - php-mysql 
+     tags: setup
+
+   - name: Configurar servidor apache
+     lineinfile:
+        path: /etc/apache2/sites-enabled/000-default.conf
+        state: present
+        regexp: ".*ServerName.*"
+        line: "        ServerName  {{ ansible_host }}.inetpsa.com"
+     notify: Reiniciar apache
+        
+
+#Configurar apache-> cambiar el ServerAdmin
+   - name: Configurar servidor apache 2
+     lineinfile:
+        path: /etc/apache2/sites-enabled/000-default.conf
+        state: present
+        regexp: ".*ServerAdmin.*"
+        line: "        ServerAdmin  {{ responsable }}"
+     notify: Reiniciar apache
+
+   - name: activar php
+     apache2_module:
+        name: "{{ item.mod }}"
+        state: "{{ item.estado }}"
+        ignore_configcheck: "{{ item.ignore }}"
+     loop:
+       - { mod: "mpm_event", estado: "absent", ignore: true }
+       - { mod: "mpm_prefork", estado: "present", ignore: true}
+       - { mod: "php7.0", estado: "present", ignore: false}
+     notify: Reiniciar apache
+
+
+   - name: descargar la aplicacion al master
+     get_url:
+        url: http://www.inetutil.info/psa/miapp.tar.bz
+        dest: /tmp
+        checksum: md5:260e9a8975c2ec91ecc07ed314ad7ced
+     delegate_to: master
+     register: descarga
+     tags: actualizar
+     run_once: true
+
+   - name: sustituir pagina index.html con plantilla
+     template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+     when: descarga.changed == true
+     tags: actualizar
+
+   - name: crear bbdd
+     mysql_db:
+        name: miapp
+        state: present
+     
+   - name: crear el usuario de la bbdd
+     mysql_user:
+        name: miappuser
+        password: miapppassword123
+        state: present
+        priv: 'miapp.*:ALL'
+
+
+   - name: comprobar si ya tenemos datos
+     shell: "echo 'select count(*) from usuarios' | mysql --skip-column-names miapp "
+     register: salida_mysql
+     changed_when: false
+     failed_when: false
+
+   - name: Cuantas filas hay
+     debug: var=salida_mysql
+
+   - name: copiar el dump de sql al servidor web
+     copy:
+        src: miapp.sql
+        dest: /tmp/miapp.sql
+     when: salida_mysql.stdout == "0" or salida_mysql.rc != 0
+
+   - name: cargar la base de datos
+     mysql_db:
+        state: import
+        name: miapp
+        target: /tmp/miapp.sql 
+     when: salida_mysql.stdout == "0" or salida_mysql.rc != 0
+
+   - name: descomprimir la aplicacion en destino
+     unarchive:  
+        src: /tmp/miapp.tar.bz
+        dest: /var/www/html
+     when: descarga.changed == true
+     tags: actualizar
+
+   - name: configurar la aplicacion
+     lineinfile:
+        path: /var/www/html/config.php
+        regexp: "{{ item.busca }}"
+        line: "{{ item.cambiapor }}"
+     loop:
+        - { busca: '.*username.*', cambiapor: '$username = "miappuser";' }
+        - { busca: '.*password.*', cambiapor: '$password = "miapppassword123";' }
+        - { busca: '.*dbname.*', cambiapor: '$dbname = "miapp";' }
+     tags: actualizar
+     #when: descarga.changed == true
+
+
+   - name: borrar ficheros temporales
+     file: 
+       path: "{{ item }}"
+       state: absent
+     loop:
+       - "/var/www/html/index.html"
+       - "/tmp/miapp.sql"
+     tags: actualizar
+
+  handlers:      
+   - name: Reiniciar apache
+     service:
+        name: apache2
+        state: restarted

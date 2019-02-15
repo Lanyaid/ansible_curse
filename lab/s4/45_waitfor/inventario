@@ -1,0 +1,13 @@
+[masters]
+master
+
+[targets]
+target[1:2]
+
+[vigo:children]
+masters
+targets
+
+[all:vars]
+ansible_become=True
+

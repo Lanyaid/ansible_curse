@@ -1,0 +1,13 @@
+---
+- name: generar el motd
+  hosts: targets
+  vars: 
+#   - responsable: fulano.fernandez@mpsa.com
+
+  tasks:
+   - name: generar el motd
+     template:
+       src: motd.j2
+       dest: /etc/motd
+
+

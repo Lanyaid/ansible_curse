@@ -1,0 +1,9 @@
+#Completar informacion de inventario:
+# [grupo:vars]
+# [grupo:children]
+# [grupo]
+
+
+#Ejemplo de grupo con hijos mezclando grupos y hosts
+
+

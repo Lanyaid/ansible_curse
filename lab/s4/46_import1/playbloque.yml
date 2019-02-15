@@ -1,0 +1,17 @@
+---
+- name: playbook con bloques
+  hosts: all
+  tasks:
+    - debug: msg="Fuera del bloque"
+
+    - name: Bloque de tareas condicionadas
+      block:
+       - debug: msg="Tarea de dentro del bloque"
+       - debug: msg="Segunda tarea dentro del bloque"
+      when: "'mast' in ansible_host"
+
+    - debug: msg="Tareas finales, comunes para todos"
+
+
+
+      

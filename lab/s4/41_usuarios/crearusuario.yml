@@ -1,0 +1,16 @@
+---
+- name: Crear usuario fulano
+  hosts: all
+  tasks:
+   - name: crear usuario
+     user:
+       name: fulano
+       comment: Fulanito de Tal
+       state: present
+       home: /home/fulanito
+       password: $6$Am5kmVC6xeS8q$pBeMT7B6/cVnuPzTxOWNo6xOHbCYuyHONv..F/7fdDimB.u.HCUveHL0x9f.M6teu1FIlHb88JNvQBBuJ4PTx0
+       # El comando para generar la clave es mkpasswd --method=sha-512 .... lo puedes encontrar en el paquete "whois".
+       groups: sudo
+     register: salida
+
+   - debug: var=salida

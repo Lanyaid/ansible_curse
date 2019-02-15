@@ -1,0 +1,17 @@
+---
+- name: Prueba de wait_for_connection
+  hosts: target2
+  tasks:
+   - name: reiniciar target2
+     shell: "sleep 3 && reboot"
+     async: 1
+     poll: 0
+
+   - name: esperar a target2
+     wait_for_connection:
+       delay: 5
+
+
+   - debug: msg="Ya esta vivo de nuevo"
+
+

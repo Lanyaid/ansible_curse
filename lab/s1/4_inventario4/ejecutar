@@ -1,0 +1,6 @@
+# Separacion del inventario en un directorio
+# Podemos poner varios archivos en un directorio. Ansible los unifica
+
+ansible -i miinventario/ targets -m debug -a var=mivariable
+ansible -i miinventario/ master -m debug -a var=mivariable
+

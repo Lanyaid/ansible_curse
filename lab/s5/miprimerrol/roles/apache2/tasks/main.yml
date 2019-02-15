@@ -1,0 +1,47 @@
+---
+# tasks file for apache2
+- name: Instalar software
+  apt: 
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - apache2
+    - php
+    - libapache2-mod-php
+    - php-mysql 
+
+
+- name: Configurar servidor apache
+  lineinfile:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: present
+    regexp: ".*ServerName.*"
+    line: "        ServerName  {{ ansible_host }}.inetpsa.com"
+  notify: Reiniciar apache
+        
+
+#Configurar apache-> cambiar el ServerAdmin
+- name: Configurar servidor apache 2
+  lineinfile:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: present
+    regexp: ".*ServerAdmin.*"
+    line: "        ServerAdmin  {{ responsable }}"
+  notify: Reiniciar apache
+
+- name: activar php
+  apache2_module:
+    name: "{{ item.mod }}"
+    state: "{{ item.estado }}"
+    ignore_configcheck: "{{ item.ignore }}"
+  loop:
+    - { mod: "mpm_event", estado: "absent", ignore: true }
+    - { mod: "mpm_prefork", estado: "present", ignore: true}
+    - { mod: "php7.0", estado: "present", ignore: false}
+  notify: Reiniciar apache
+
+- name: sustituir pagina index.html con plantilla
+  template:
+     src: index.html.j2
+     dest: /var/www/html/index.html
+

@@ -1,0 +1,29 @@
+#Añadir variables.
+#-----------------
+#ansible_connection: local <- la misma maquina desde la que ejecutamos ansible, 
+#                             no necesario el ssh
+#ansible_user: con que usuario nos conectamos
+
+
+ansible -i miinventario master -m command -a id
+
+#ansible_become: si debemos transformarnos en root
+#añadimos el ansible_become y necesita la clave de sudo
+
+ansible -i miinventario master -m command -a id
+
+#Definimos variables de tres maneras: -e, complemento al host y variables de grupo
+# -e mivar=mivalor
+
+ansible -i miinventario master -m debug -a var=mivar -e mivar=mivalor
+
+#Añadimos la variable a la linea de host de master y probamos otra vez
+
+ansible -i miinventario master -m debug -a var=mivar
+
+#Finalmente, añadimos la variable y el ansible_become a [todos:vars]
+
+ansible -i miinventario master -m debug -a var=mivar
+
+#El grupo "todos" existe de manera automática, se llama "all". Cambiamos y probamos
+

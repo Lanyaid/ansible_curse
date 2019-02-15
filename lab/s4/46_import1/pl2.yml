@@ -1,0 +1,6 @@
+---
+- name: playbook 2
+  hosts: target2
+
+  tasks: 
+    - debug: var=fecha

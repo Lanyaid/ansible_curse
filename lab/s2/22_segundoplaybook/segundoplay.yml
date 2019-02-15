@@ -1,0 +1,13 @@
+---
+- name: Mi segundo playbook
+  hosts: all
+  vars:
+    variable: Hola
+  tasks: 
+   # Variable en formato yaml, separada por :
+   - name: el contenido de "variable"
+     debug:
+       var: variable
+   # Variable en formato resumido, separadas por = 
+   - name: Nombre del host
+     debug: var=ansible_host

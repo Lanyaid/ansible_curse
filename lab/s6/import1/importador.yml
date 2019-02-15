@@ -1,0 +1,11 @@
+---
+- name: playbook importador
+  hosts: all
+  tasks:
+   - name: playbook importador
+     debug: 
+       msg: playbook de importar
+
+- import_playbook: pl1.yml
+- import_playbook: pl2.yml
+

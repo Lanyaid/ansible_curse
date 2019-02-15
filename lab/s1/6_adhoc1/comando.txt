@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Empecemos por algo conocido
+ansible -i inventario all -m command -a "id" 
+
+
+# Esto es lo que ocurre cuando ansible conecta
+ansible -i inventario target1 -m setup
+
+# Vamos a editar el fichero hosts y a copiarlo a todos los equipos
+ansible -i inventario targets -m copy -a "src=/etc/hosts dest=/etc/hosts"
+
+

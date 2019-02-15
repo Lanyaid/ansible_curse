@@ -1,0 +1,14 @@
+---
+- name: cargador de tareas
+  hosts: all
+  tasks:
+
+    - debug: msg="Desde el lanzador"
+
+    - name: condiciones en el include dinamico
+      include_tasks: "tareas2.yml"
+      when: "'target' in  ansible_host " 
+
+    - name: Include dinamico con secuencia
+      include_tasks: "tareas{{ item }}.yml"
+      with_sequence: count=2

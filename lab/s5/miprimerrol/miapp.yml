@@ -1,0 +1,10 @@
+---
+- name: Desplegar aplicacion
+  hosts: webserver
+  tasks:
+   - include_role: 
+       name: miapp
+
+   - debug: msg="He acabado el playbook miapp"
+
+

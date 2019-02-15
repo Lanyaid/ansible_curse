@@ -1,0 +1,9 @@
+---
+- name: playbook 2
+  hosts: all
+  tasks: 
+    - name: debug 2
+      debug:  
+       msg: tarea2 playbook2
+
+

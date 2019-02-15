@@ -1,0 +1,12 @@
+[targets]
+target1
+target2
+
+[masters]
+master    ansible_connection=local  
+
+[todos:children]
+targets
+masters
+
+

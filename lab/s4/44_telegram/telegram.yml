@@ -1,0 +1,12 @@
+---
+- name: mi primer playbook
+  hosts: localhost
+  connection: local
+  tasks:
+   - name: mandar un mensaje a telegram
+     telegram:
+       token: 'aqui el token'
+       #El chat_id se obtiene de https://api.telegram.org/bot-token/getUpdates
+       chat_id: chat_id
+       msg: "Ya termine de hacer tu trabajo"
+

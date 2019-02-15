@@ -1,0 +1,21 @@
+---
+# tasks file for mysql
+- debug: msg="Hola desde el rol de mysql"
+- name: Instalar software para mysql
+  apt: 
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - mysql-server
+    - python-mysqldb
+
+- name: habilitar acceso a mysql desde la red
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf 
+    regexp: '.*bind-address.*'
+    line: 'bind-address = 0.0.0.0'
+  notify: reiniciar_mysql
+
+    
+
+

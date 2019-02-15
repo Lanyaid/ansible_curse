@@ -1,0 +1,8 @@
+---
+- name: Crear fichero /tmp/hosts a partir de plantilla
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: prueba
+    command: ls
+  - debug: var=responsable2

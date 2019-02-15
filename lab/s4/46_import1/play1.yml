@@ -1,0 +1,14 @@
+---
+- name: playbook grande
+  hosts: all
+#  vars_prompt:
+#    - name: numero
+#      private: no
+#      prompt: "Que fichero incorporo?"
+  tasks:
+   - debug: msg="voy a cargar pl{{ numero }}.yml"
+   - command: date
+     register: fecha
+# Requiere definir la variable con -e
+- import_playbook: "pl{{ numero }}.yml"
+

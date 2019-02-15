@@ -1,0 +1,27 @@
+---
+# tasks file for comun
+- name: instalar ntp
+  apt:
+    name: ntp
+    state: latest
+    update_cache: yes
+
+
+- name: Eliminar servidores externos de ntp
+  lineinfile:
+    path: /etc/ntp.conf
+    regexp: "pool.*"
+    state: absent
+  notify: reinicia_ntp
+
+- name: Configurar los servidores de ntp corporativos
+  lineinfile:
+    path: /etc/ntp.conf
+    line: "{{ item }}"
+    state: present
+  notify: reinicia_ntp
+
+  loop:
+    - "pool 10.92.219.100"
+    - "pool 10.68.161.3"
+

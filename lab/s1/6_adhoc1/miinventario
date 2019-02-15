@@ -1,0 +1,17 @@
+[masters]
+master
+
+[targets]
+target[1:2]
+
+[vigo:children]
+masters
+target1 #ERROR: en children van solo grupos
+
+#Si quieremos añadir un host a un grupo, repetimos el grupo sin ":children"
+#[vigo]
+#target1
+
+[vars:all]
+ansible_become=True
+

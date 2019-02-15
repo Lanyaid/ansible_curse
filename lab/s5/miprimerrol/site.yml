@@ -1,0 +1,9 @@
+---
+- name: instalar todo
+  hosts: all
+  tasks:
+    - debug: msg=arrancando...
+
+- import_playbook: dbserver.yml
+- import_playbook: webserver.yml
+- import_playbook: miapp.yml

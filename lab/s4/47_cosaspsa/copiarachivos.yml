@@ -1,0 +1,19 @@
+---
+- name: copiar archivos en paths seleccionados
+
+  hosts: all
+  tasks:
+
+   - name: Encontrar los directorios de destino
+     find:
+       file_type: directory
+       paths: /etc
+       pattern: '*unk'
+     register: directorios
+
+   - name: copiar fichero en directorios destino
+     copy: 
+       src: /etc/hosts
+       dest: "{{ item.path }}/security"
+     loop: "{{ directorios.files }}" 
+       

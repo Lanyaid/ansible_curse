@@ -1,0 +1,13 @@
+---
+- name: Instalar mis servidores web
+  hosts: webserver
+  tasks:
+   - include_role: 
+       name: comun
+
+   - include_role: 
+       name: apache2
+
+   - debug: msg="He acabado el playbook webserver"
+
+

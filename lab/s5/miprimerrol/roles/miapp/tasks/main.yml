@@ -1,0 +1,49 @@
+---
+# tasks file for miapp
+- block:
+   - name: crear bbdd
+     mysql_db:
+        name: miapp
+        state: present
+     
+   - name: crear el usuario de la bbdd
+     mysql_user:
+        name: miappuser
+        password: miapppassword123
+        state: present
+        host: '%'
+        priv: 'miapp.*:ALL'
+
+   - name: copiar el dump de sql al servidor web
+     copy:
+        src: miapp.sql
+        dest: /tmp/miapp.sql
+
+   - name: cargar la base de datos
+     mysql_db:
+        state: import
+        name: miapp
+        target: /tmp/miapp.sql 
+  delegate_to: target2
+
+- name: descomprimir la aplicacion en destino
+  unarchive:  
+     src: miapp.tar.bz
+     dest: /var/www/html
+
+- name: configurar la aplicacion
+  lineinfile:
+        path: /var/www/html/config.php
+        regexp: "{{ item.busca }}"
+        line: "{{ item.cambiapor }}"
+  loop:
+        - { busca: '.*servername.*', cambiapor: '$servername = "target2";' }
+        - { busca: '.*username.*', cambiapor: '$username = "miappuser";' }
+        - { busca: '.*password.*', cambiapor: '$password = "miapppassword123";' }
+        - { busca: '.*dbname.*', cambiapor: '$dbname = "miapp";' }
+
+- name: borrar el index.html
+  file: 
+    path: /var/www/html/index.html
+    state: absent
+
